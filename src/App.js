@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import './App.css';
 import {FormGroup, FormControl, InputGroup, Glyphicon} from 'react-bootstrap';
-import Profile from './Profile';
-import Gallery from './Gallery';
+import Profile from './components/Profile/Profile';
+import Gallery from './containers/Gallery/Gallery';
 
 class App extends Component {
 

@@ -1,11 +1,10 @@
-import React, {Component} from 'react';
-import './App.css';
+import React from 'react';
+import './Profile.css';
 
-class Profile extends Component {
-    render() {
+const profile = (props) => {
         let artist = {name: '', picture: ''};
-        if(this.props.artist !== null) {
-            artist = this.props.artist[0].artist;
+        if(props.artist !== null) {
+            artist = props.artist[0].artist;
         }
         return(
             <div className="profile">
@@ -18,7 +17,6 @@ class Profile extends Component {
                 </div>
             </div>
         );
-    }
 }
 
-export default Profile;
+export default profile;     
