@@ -16,18 +16,15 @@ class App extends Component {
         const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?';
         let FETCH_URL = `${BASE_URL}q=${this.state.query}`;
         const ALBUM_URL = 'https://cors-anywhere.herokuapp.com/https://api.deezer.com/artist/';
-            console.log("FETCH_URL", FETCH_URL);
             fetch(FETCH_URL, {
                 method: 'GET'
             })
             .then(response =>response.json())
             .then(json => {
                 const artist = json.data;
-                console.log('artist', artist);
                 this.setState({artist});
 
                 FETCH_URL = `${ALBUM_URL}${artist[0].artist.id}/top?limit=50`;
-                console.log("FETCH_URL", FETCH_URL);
                 fetch(FETCH_URL, {
                     method: 'GET'
                 })

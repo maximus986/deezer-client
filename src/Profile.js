@@ -3,7 +3,6 @@ import './App.css';
 
 class Profile extends Component {
     render() {
-        console.log(this.props);
         let artist = {name: '', picture: ''};
         if(this.props.artist !== null) {
             artist = this.props.artist[0].artist;
