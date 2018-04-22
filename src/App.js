@@ -1,30 +1,42 @@
 import React, {Component} from 'react';
 import './App.css';
 import {FormGroup, FormControl, InputGroup, Glyphicon} from 'react-bootstrap';
+import Profile from './Profile';
 
 class App extends Component {
 
     state = {
         query: '',
-        artist: null
+        artist: null,
+        tracks: []
     }
 
     search() {
         const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?';
-        const FETCH_URL = `${BASE_URL}q=${this.state.query}`;
+        let FETCH_URL = `${BASE_URL}q=${this.state.query}`;
+        const ALBUM_URL = 'https://cors-anywhere.herokuapp.com/https://api.deezer.com/artist/';
             console.log("FETCH_URL", FETCH_URL);
             fetch(FETCH_URL, {
                 method: 'GET'
             })
             .then(response =>response.json())
             .then(json => {
-                const artist = json.data[0].artist.name;
+                const artist = json.data;
+                console.log('artist', artist);
                 this.setState({artist});
-                console.log('this.state', this.state);
+
+                FETCH_URL = `${ALBUM_URL}${artist[0].artist.id}/top?limit=50`;
+                console.log("FETCH_URL", FETCH_URL);
+                fetch(FETCH_URL, {
+                    method: 'GET'
+                })
+                .then(response => response.json())
+                .then(json => console.log('artist top tracks:', json));
+                const tracks = json.data;
+                this.setState({tracks});
             });
         }
-    
-        
+
     render() {
         return (
             <div className="App">
@@ -46,13 +58,19 @@ class App extends Component {
                             </InputGroup.Addon>
                         </InputGroup>
                     </FormGroup>
-                <div className="Profile">  
-                    <div>Artist Picture</div>
-                    <div>Artist Name</div>
-                </div>
-                <div className="Gallery">
-                    Gallery
-                </div>
+                    {
+                        this.state.artist !== null
+                        ? 
+                        <div>
+                            <Profile 
+                                artist={this.state.artist}
+                            />
+                            <div className="Gallery">
+                                Gallery
+                            </div>
+                        </div>                        
+                        : <div></div>
+                    }
             </div>
         )
     }
