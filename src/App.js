@@ -5,11 +5,11 @@ import {FormGroup, FormControl, InputGroup, Glyphicon} from 'react-bootstrap';
 class App extends Component {
 
     state = {
-        query: '' 
+        query: '',
+        artist: null
     }
 
     search() {
-        console.log("this.state", this.state); 
         const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?';
         const FETCH_URL = `${BASE_URL}q=${this.state.query}`;
             console.log("FETCH_URL", FETCH_URL);
@@ -17,7 +17,11 @@ class App extends Component {
                 method: 'GET'
             })
             .then(response =>response.json())
-            .then(json => console.log(json));
+            .then(json => {
+                const artist = json.data[0].artist.name;
+                this.setState({artist});
+                console.log('this.state', this.state);
+            });
         }
     
         
