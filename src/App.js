@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import './App.css';
 import {FormGroup, FormControl, InputGroup, Glyphicon} from 'react-bootstrap';
+import './App.css';
 import Profile from './components/Profile/Profile';
 import Gallery from './containers/Gallery/Gallery';
 
@@ -29,11 +29,34 @@ class App extends Component {
                     method: 'GET'
                 })
                 .then(response => response.json())
-                .then(json => console.log('artist top tracks:', json));
-                const tracks = json.data;
-                this.setState({tracks});
+                .then(json => {
+                    const tracks = json.data;
+                    this.setState({tracks});
+                });
             });
         }
+
+    inputChanged = (event) => {
+        this.setState({query: event.target.value});
+    }
+    
+    inputKeyPressed = (event) => {
+        if(event.key === "Enter") {
+            this.search();
+        }
+    }
+
+    renderArtist() {
+        return(
+        <div>
+            <Profile 
+                artist={this.state.artist}
+            />
+            <Gallery 
+                tracks={this.state.tracks}/>
+        </div> 
+        )
+    }
 
     render() {
         return (
@@ -45,12 +68,9 @@ class App extends Component {
                                 type="text" 
                                 placeholder="Search for an artist..." 
                                 value={this.state.query}
-                                onChange={event => this.setState({query: event.target.value})} 
-                                onKeyPress={event => {
-                                    if(event.key === "Enter") {
-                                        this.search();
-                                    }
-                                }}/> 
+                                onChange={this.inputChanged} 
+                                onKeyPress={this.inputKeyPressed}
+                                /> 
                             <InputGroup.Addon onClick={() => this.search()}>
                                 <Glyphicon glyph="search"></Glyphicon>
                             </InputGroup.Addon>
@@ -59,13 +79,7 @@ class App extends Component {
                     {
                         this.state.artist !== null
                         ? 
-                        <div>
-                            <Profile 
-                                artist={this.state.artist}
-                            />
-                            <Gallery 
-                                tracks={this.state.tracks}/>
-                        </div>                        
+                        this.renderArtist()                
                         : <div></div>
                     }
             </div>
