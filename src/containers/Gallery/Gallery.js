@@ -16,23 +16,54 @@ class Gallery extends Component {
                 playingUrl: previewUrl,
                 playing: true,
                 audio
-            })
-        } else {
-            if(this.state.playingUrl === previewUrl) {
-                this.state.audio.pause();
-                this.setState({
-                    playing: false
-                })
-            } else {
+            });
+            return;
+        } 
+
+        if(this.state.playingUrl === previewUrl) {
             this.state.audio.pause();
-            audio.play();
             this.setState({
-                playing: true,
-                playingUrl: previewUrl,
-                audio
-                })
-            }
-        }
+                playing: false
+            })
+            return;
+        } 
+        
+        this.state.audio.pause();
+        audio.play();
+        this.setState({
+            playing: true,
+            playingUrl: previewUrl,
+            audio
+            })
+    }
+
+    renderTrack = (track, i) => {
+        const trackImg = track.album.cover;
+        return(
+            <div 
+                key={i}
+                className="track"
+                onClick={() => this.playAudio(track.preview)}
+            >
+            <img 
+                src={trackImg}
+                className="track-img"
+                alt="track"
+            />
+            <div className="track-play">
+                <div className="track-play-inner">
+                    {
+                        this.state.playingUrl === track.preview
+                        ? <span>| |</span>
+                        : <span>&#9654;</span>
+                    }
+                </div>
+            </div>
+            <p className="track-text">
+                {track.title}
+            </p>
+        </div>
+        );
     }
 
     render() {
@@ -40,34 +71,7 @@ class Gallery extends Component {
         return(
             <div>
                 {
-                    tracks.map((track, i) => {
-                        const trackImg = track.album.cover;
-                        return(
-                            <div 
-                                key={i}
-                                className="track"
-                                onClick={() => this.playAudio(track.preview)}
-                            >
-                            <img 
-                                src={trackImg}
-                                className="track-img"
-                                alt="track"
-                            />
-                            <div className="track-play">
-                                <div className="track-play-inner">
-                                    {
-                                        this.state.playingUrl === track.preview
-                                        ? <span>| |</span>
-                                        : <span>&#9654;</span>
-                                    }
-                                </div>
-                            </div>
-                            <p className="track-text">
-                                {track.title}
-                            </p>
-                        </div>
-                        );
-                    })
+                    tracks.map(this.renderTrack)
                 }
             </div>
         );

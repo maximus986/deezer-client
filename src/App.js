@@ -3,6 +3,7 @@ import {FormGroup, FormControl, InputGroup, Glyphicon} from 'react-bootstrap';
 import './App.css';
 import Profile from './components/Profile/Profile';
 import Gallery from './containers/Gallery/Gallery';
+import deezerAPI from './deezerAPI';
 
 class App extends Component {
 
@@ -12,45 +13,30 @@ class App extends Component {
         tracks: []
     }
 
-    search() {
-        const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://api.deezer.com/search?';
-        let FETCH_URL = `${BASE_URL}q=${this.state.query}`;
-        const ALBUM_URL = 'https://cors-anywhere.herokuapp.com/https://api.deezer.com/artist/';
-            fetch(FETCH_URL, {
-                method: 'GET'
-            })
-            .then(response =>response.json())
-            .then(json => {
-                const artist = json.data;
-                this.setState({artist});
-
-                FETCH_URL = `${ALBUM_URL}${artist[0].artist.id}/top?limit=50`;
-                fetch(FETCH_URL, {
-                    method: 'GET'
-                })
-                .then(response => response.json())
-                .then(json => {
-                    const tracks = json.data;
-                    this.setState({tracks});
-                });
-            });
-        }
-
     inputChanged = (event) => {
         this.setState({query: event.target.value});
     }
     
     inputKeyPressed = (event) => {
         if(event.key === "Enter") {
-            this.search();
+            deezerAPI.search(this.state.query)
+                .then(result => {
+                    this.setState({artist: result.artist, tracks: result.tracks})
+                });
         }
     }
 
     renderArtist() {
+        let artist = {name: '', picture: ''};
+        if(this.state.artist !== null) {
+            artist = this.state.artist[0].artist;
+        }
+
         return(
         <div>
             <Profile 
-                artist={this.state.artist}
+                picture={artist.picture}
+                name={artist.name}
             />
             <Gallery 
                 tracks={this.state.tracks}/>
