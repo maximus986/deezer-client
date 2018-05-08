@@ -4,13 +4,15 @@ import './App.css';
 import Profile from './components/Profile/Profile';
 import Gallery from './containers/Gallery/Gallery';
 import deezerAPI from './deezerAPI';
+import Spinner from './components/Spinner/Spinner';
 
 class App extends Component {
 
     state = {
         query: '',
         artist: null,
-        tracks: []
+        tracks: [],
+        loading: false
     }
 
     inputChanged = (event) => {
@@ -19,9 +21,10 @@ class App extends Component {
     
     inputKeyPressed = (event) => {
         if(event.key === "Enter") {
+            this.setState({artist: null,tracks: [], loading: true});
             deezerAPI.search(this.state.query)
                 .then(result => {
-                    this.setState({artist: result.artist, tracks: result.tracks})
+                    this.setState({artist: result.artist, tracks: result.tracks, loading: false})
                 });
         }
     }
@@ -33,18 +36,19 @@ class App extends Component {
         }
 
         return(
-        <div>
-            <Profile 
-                picture={artist.picture}
-                name={artist.name}
-            />
-            <Gallery 
-                tracks={this.state.tracks}/>
-        </div> 
+            <div>
+                <Profile 
+                    picture={artist.picture}
+                    name={artist.name}
+                />
+                <Gallery 
+                    tracks={this.state.tracks}/>
+            </div>
         )
     }
 
     render() {
+        
         return (
             <div className="App">
                 <div className="App-title">Music Master</div>
@@ -63,11 +67,16 @@ class App extends Component {
                         </InputGroup>
                     </FormGroup>
                     {
-                        this.state.artist !== null
+                        this.state.artist !== null 
                         ? 
-                        this.renderArtist()                
-                        : <div></div>
+                        this.renderArtist()
+                        :
+                        this.state.loading
+                        ?
+                        <Spinner />
+                        : <div></div> 
                     }
+            
             </div>
         )
     }

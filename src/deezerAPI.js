@@ -11,7 +11,7 @@ class DeezerAPI {
             .then(response => response.json())
             .then(json => {
                 const artist = json.data;
-                results.artist = artist;
+                results.artist = artist; 
 
                 FETCH_URL = `${ALBUM_URL}${artist[0].artist.id}/top?limit=50`;
                 return fetch(FETCH_URL, {
